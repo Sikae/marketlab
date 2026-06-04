@@ -27,6 +27,8 @@ describe("Header", () => {
     expect(html).toContain("MarketLab");
     expect(html).toContain('href="/markets"');
     expect(html).toContain("Markets");
+    expect(html).toContain("My Positions");
+    expect(html).toContain('href="/positions"');
     expect(html).toContain('aria-label="Switch to dark mode"');
     expect(html).toContain('data-slot="header-auth"');
     expect(html).toContain("Sign in");

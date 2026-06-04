@@ -21,6 +21,7 @@ export function Header() {
           </Link>
           <nav className="flex items-center gap-1">
             <HeaderNavLink href="/markets">Markets</HeaderNavLink>
+            <HeaderNavLink href="/positions">My Positions</HeaderNavLink>
           </nav>
         </div>
         <div className="flex items-center gap-2">

@@ -11,6 +11,7 @@ export type BuySuccessState = {
   yesSharesCents: number;
   noSharesCents: number;
   investedCents: number;
+  yesProbability: number;
 };
 
 export type BuyActionState = {
