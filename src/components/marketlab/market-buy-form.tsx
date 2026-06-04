@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 
 import { buyMarket } from "@/app/actions/buy";
 import {
@@ -12,6 +12,7 @@ import {
 import { formatFakeBalance, formatFakeShares } from "@/lib/fake-money";
 import type {
   BuyActionState,
+  BuySuccessState,
   PositionSummary,
 } from "@/lib/markets/buy-validation";
 
@@ -41,12 +42,23 @@ export function MarketBuyForm({
   marketId,
   balanceCents,
   position,
+  onBuySuccess,
 }: {
   marketId: string;
   balanceCents: number;
   position: PositionSummary | null;
+  onBuySuccess?: (success: BuySuccessState) => void;
 }) {
   const [state, formAction, pending] = useActionState(buyMarket, initialState);
+  const lastSuccessRef = useRef<BuySuccessState | undefined>(undefined);
+
+  useEffect(() => {
+    if (!state.success || state.success === lastSuccessRef.current) {
+      return;
+    }
+    lastSuccessRef.current = state.success;
+    onBuySuccess?.(state.success);
+  }, [state.success, onBuySuccess]);
 
   const balance = state.success?.balanceCents ?? balanceCents;
   const currentPosition = displayPosition(position, state.success);

@@ -3,6 +3,7 @@ import { MarketBuySignIn } from "@/components/marketlab/market-buy-sign-in";
 import { MarketBuyUnavailable } from "@/components/marketlab/market-buy-unavailable";
 import { isMarketBuyable } from "@/lib/markets/buy";
 import type { MarketBuyContext } from "@/lib/markets/buy-context";
+import type { BuySuccessState } from "@/lib/markets/buy-validation";
 import type { MarketListItem } from "@/lib/markets/types";
 
 export type { MarketBuyContext } from "@/lib/markets/buy-context";
@@ -10,9 +11,11 @@ export type { MarketBuyContext } from "@/lib/markets/buy-context";
 export function MarketBuySection({
   market,
   buyContext,
+  onBuySuccess,
 }: {
   market: MarketListItem;
   buyContext: MarketBuyContext;
+  onBuySuccess?: (success: BuySuccessState) => void;
 }) {
   const buyable = isMarketBuyable(market.status, market.close_date);
   const expired =
@@ -32,6 +35,7 @@ export function MarketBuySection({
       marketId={market.id}
       balanceCents={buyContext.balanceCents}
       position={buyContext.position}
+      onBuySuccess={onBuySuccess}
     />
   );
 }

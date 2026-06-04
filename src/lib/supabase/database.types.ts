@@ -52,6 +52,35 @@ export type Database = {
           },
         ];
       };
+      market_yes_prices: {
+        Row: {
+          id: string;
+          market_id: string;
+          recorded_at: string;
+          yes_probability: number;
+        };
+        Insert: {
+          id?: string;
+          market_id: string;
+          recorded_at?: string;
+          yes_probability: number;
+        };
+        Update: {
+          id?: string;
+          market_id?: string;
+          recorded_at?: string;
+          yes_probability?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "market_yes_prices_market_id_fkey";
+            columns: ["market_id"];
+            isOneToOne: false;
+            referencedRelation: "markets";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       markets: {
         Row: {
           close_date: string;
@@ -156,17 +185,18 @@ export type Database = {
     };
     Functions: {
       buy_market_shares: {
-        Args: {
-          p_amount_cents: number;
-          p_market_id: string;
-          p_side: string;
-        };
+        Args: { p_amount_cents: number; p_market_id: string; p_side: string };
         Returns: {
           balance_cents: number;
           invested_cents: number;
           no_shares_cents: number;
+          yes_probability: number;
           yes_shares_cents: number;
         }[];
+      };
+      market_yes_probability: {
+        Args: { p_market_id: string };
+        Returns: number;
       };
     };
     Enums: {

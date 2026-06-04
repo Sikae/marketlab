@@ -1,64 +1,67 @@
 import { describe, expect, it } from "vitest";
+
 import {
-  buildMockYesHistory,
   filterYesHistoryByRange,
   formatYesProbability,
   getCurrentYesProbability,
-  MOCK_HISTORY_REFERENCE_DATE,
-  WORKSHOP_CURRENT_YES_PERCENT,
-  WORKSHOP_MARKET_ID,
+  type MarketYesPricePoint,
+  resolveCurrentYesPercent,
 } from "./price-history";
 
-describe("buildMockYesHistory", () => {
-  it("returns a deterministic series for the same market id", () => {
-    const a = buildMockYesHistory(WORKSHOP_MARKET_ID);
-    const b = buildMockYesHistory(WORKSHOP_MARKET_ID);
+const samplePoints: MarketYesPricePoint[] = [
+  { recorded_at: "2026-06-01T12:00:00.000Z", yes_probability: 40 },
+  { recorded_at: "2026-06-02T12:00:00.000Z", yes_probability: 55 },
+  { recorded_at: "2026-06-04T12:00:00.000Z", yes_probability: 62 },
+];
 
-    expect(a).toEqual(b);
-    expect(a).toHaveLength(60);
+describe("getCurrentYesProbability", () => {
+  it("returns the latest point probability", () => {
+    expect(getCurrentYesProbability(samplePoints)).toBe(62);
   });
 
-  it("produces a stable current Yes chance for the workshop fixture", () => {
-    const points = buildMockYesHistory(WORKSHOP_MARKET_ID, {
-      referenceDate: MOCK_HISTORY_REFERENCE_DATE,
-    });
+  it("returns 50 when there is no history", () => {
+    expect(getCurrentYesProbability([])).toBe(50);
+  });
+});
 
-    expect(getCurrentYesProbability(points)).toBe(WORKSHOP_CURRENT_YES_PERCENT);
-    expect(formatYesProbability(getCurrentYesProbability(points))).toBe("62%");
+describe("resolveCurrentYesPercent", () => {
+  it("returns 100 for resolved Yes markets", () => {
+    expect(
+      resolveCurrentYesPercent({ status: "resolved_yes" }, samplePoints),
+    ).toBe(100);
   });
 
-  it("ends at the reference date", () => {
-    const points = buildMockYesHistory(WORKSHOP_MARKET_ID, {
-      referenceDate: MOCK_HISTORY_REFERENCE_DATE,
-    });
+  it("returns 0 for resolved No markets", () => {
+    expect(
+      resolveCurrentYesPercent({ status: "resolved_no" }, samplePoints),
+    ).toBe(0);
+  });
 
-    expect(points[points.length - 1].recorded_at).toBe(
-      MOCK_HISTORY_REFERENCE_DATE.toISOString(),
+  it("uses history for open markets", () => {
+    expect(resolveCurrentYesPercent({ status: "open" }, samplePoints)).toBe(62);
+  });
+
+  it("prefers latestFromDb for open markets when provided", () => {
+    expect(resolveCurrentYesPercent({ status: "open" }, samplePoints, 97)).toBe(
+      97,
     );
   });
 });
 
 describe("filterYesHistoryByRange", () => {
-  const points = buildMockYesHistory(WORKSHOP_MARKET_ID, {
-    referenceDate: MOCK_HISTORY_REFERENCE_DATE,
-  });
-
   it("returns all points for ALL", () => {
-    expect(filterYesHistoryByRange(points, "ALL")).toHaveLength(60);
+    expect(filterYesHistoryByRange(samplePoints, "ALL")).toHaveLength(3);
   });
 
-  it("narrows points for 1W and 1D", () => {
-    const oneWeek = filterYesHistoryByRange(points, "1W");
-    const oneDay = filterYesHistoryByRange(points, "1D");
-
-    expect(oneWeek.length).toBeGreaterThan(oneDay.length);
-    expect(oneDay.length).toBeGreaterThan(0);
-    expect(oneWeek.length).toBeLessThan(points.length);
+  it("filters to the last day window", () => {
+    const filtered = filterYesHistoryByRange(samplePoints, "1D");
+    expect(filtered.length).toBeGreaterThan(0);
+    expect(filtered[filtered.length - 1].yes_probability).toBe(62);
   });
 });
 
-describe("getCurrentYesProbability", () => {
-  it("returns 0 for an empty series", () => {
-    expect(getCurrentYesProbability([])).toBe(0);
+describe("formatYesProbability", () => {
+  it("formats as a rounded percent string", () => {
+    expect(formatYesProbability(62.4)).toBe("62%");
   });
 });

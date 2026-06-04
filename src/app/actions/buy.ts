@@ -60,12 +60,15 @@ export async function buyMarket(
   revalidatePath(`/markets/${parsed.data.market_id}`);
   revalidatePath("/", "layout");
 
+  const yesProbability = Number(row.yes_probability);
+
   return {
     success: {
       balanceCents: Number(row.balance_cents),
       yesSharesCents: Number(row.yes_shares_cents),
       noSharesCents: Number(row.no_shares_cents),
       investedCents: Number(row.invested_cents),
+      yesProbability: Number.isFinite(yesProbability) ? yesProbability : 50,
     },
   };
 }
