@@ -1,5 +1,10 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
+import {
+  HeaderAuth,
+  HeaderAuthFallback,
+} from "@/components/marketlab/header-auth";
 import { HeaderNavLink } from "@/components/marketlab/header-nav-link";
 import { ThemeToggle } from "@/components/marketlab/theme-toggle";
 
@@ -19,7 +24,9 @@ export function Header() {
           </nav>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2" data-slot="header-auth" />
+          <Suspense fallback={<HeaderAuthFallback />}>
+            <HeaderAuth />
+          </Suspense>
           <ThemeToggle />
         </div>
       </div>
