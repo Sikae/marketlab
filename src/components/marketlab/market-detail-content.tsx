@@ -1,6 +1,7 @@
-import { MarketBuyPlaceholder } from "@/components/marketlab/market-buy-placeholder";
+import { MarketBuySection } from "@/components/marketlab/market-buy-section";
 import { MarketOutcomes } from "@/components/marketlab/market-outcomes";
 import { MarketYesChart } from "@/components/marketlab/market-yes-chart";
+import type { MarketBuyContext } from "@/lib/markets/buy-context";
 import { formatCloseDate, formatMarketStatus } from "@/lib/markets/format";
 import {
   buildMockYesHistory,
@@ -8,7 +9,13 @@ import {
 } from "@/lib/markets/price-history";
 import type { MarketListItem } from "@/lib/markets/types";
 
-export function MarketDetailContent({ market }: { market: MarketListItem }) {
+export function MarketDetailContent({
+  market,
+  buyContext,
+}: {
+  market: MarketListItem;
+  buyContext: MarketBuyContext;
+}) {
   const history = buildMockYesHistory(market.id);
   const currentYesPercent = getCurrentYesProbability(history);
 
@@ -41,7 +48,7 @@ export function MarketDetailContent({ market }: { market: MarketListItem }) {
 
       <MarketOutcomes currentYesPercent={currentYesPercent} />
 
-      <MarketBuyPlaceholder status={market.status} />
+      <MarketBuySection market={market} buyContext={buyContext} />
     </article>
   );
 }

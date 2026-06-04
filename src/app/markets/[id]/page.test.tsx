@@ -17,6 +17,12 @@ const openMarket: MarketListItem = {
   close_date: "2026-06-15T18:00:00.000Z",
 };
 
+const signedOutBuy = {
+  isSignedIn: false,
+  balanceCents: 0,
+  position: null,
+};
+
 /** Mirrors the detail page shell (back link + content) for stable UI tests. */
 function MarketDetailPageShell({ market }: { market: MarketListItem }) {
   return (
@@ -24,7 +30,7 @@ function MarketDetailPageShell({ market }: { market: MarketListItem }) {
       <Button variant="ghost" size="sm" className="mb-6 -ml-2" asChild>
         <Link href="/markets">← Back to markets</Link>
       </Button>
-      <MarketDetailContent market={market} />
+      <MarketDetailContent market={market} buyContext={signedOutBuy} />
     </div>
   );
 }
