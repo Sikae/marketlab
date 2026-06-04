@@ -20,10 +20,16 @@ const closedMarket: MarketListItem = {
   status: "closed",
 };
 
+const signedOutBuy = {
+  isSignedIn: false,
+  balanceCents: 0,
+  position: null,
+};
+
 describe("MarketDetailContent", () => {
   it("renders chart, current Yes chance, and market info for open markets", () => {
     const html = renderToStaticMarkup(
-      <MarketDetailContent market={openMarket} />,
+      <MarketDetailContent market={openMarket} buyContext={signedOutBuy} />,
     );
 
     expect(html).toContain("Will it rain tomorrow?");
@@ -41,7 +47,7 @@ describe("MarketDetailContent", () => {
 
   it("shows buying unavailable for closed markets", () => {
     const html = renderToStaticMarkup(
-      <MarketDetailContent market={closedMarket} />,
+      <MarketDetailContent market={closedMarket} buyContext={signedOutBuy} />,
     );
 
     expect(html).toContain("Buying unavailable");
