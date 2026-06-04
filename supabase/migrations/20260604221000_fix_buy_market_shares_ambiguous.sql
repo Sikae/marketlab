@@ -1,5 +1,4 @@
--- Atomic fake-money buy: deduct balance, upsert position, ledger entry.
--- Uses auth.uid() only; never accepts user_id from the client.
+-- Fix ambiguous balance_cents: RETURNS TABLE output names shadow table columns.
 
 create or replace function public.buy_market_shares(
   p_market_id uuid,
@@ -131,6 +130,3 @@ begin
     v_invested;
 end;
 $$;
-
-revoke all on function public.buy_market_shares(uuid, text, bigint) from public;
-grant execute on function public.buy_market_shares(uuid, text, bigint) to authenticated;

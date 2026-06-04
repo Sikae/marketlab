@@ -52,6 +52,9 @@ export function mapBuyRpcError(message: string): string {
   if (normalized.includes("invalid_side")) {
     return "Choose Yes or No.";
   }
+  if (normalized.includes("profile_not_found")) {
+    return "Your profile was not found. Try signing out and back in.";
+  }
 
   return "Buy failed. Please try again.";
 }

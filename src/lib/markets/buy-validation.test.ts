@@ -28,5 +28,6 @@ describe("mapBuyRpcError", () => {
       "enough fake balance",
     );
     expect(mapBuyRpcError("market_not_buyable")).toContain("not open");
+    expect(mapBuyRpcError("profile_not_found")).toContain("profile");
   });
 });
