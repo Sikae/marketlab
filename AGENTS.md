@@ -20,7 +20,9 @@ Do not add dependencies or replace the stack unless asked.
 
 ## Skills and Docs
 
-Use relevant installed skills for framework-specific work.
+Project agent skills live in `.agents/skills/` (one folder per skill with `SKILL.md`). Installed versions are pinned in `skills-lock.json` at the repo root. Add or update skills with `npx skills add` / `npx skills find`; restart the agent chat after installing so new skills load.
+
+Use relevant installed skills for framework-specific work (Supabase, Next.js App Router, React, shadcn, Tailwind).
 
 For Next.js-specific uncertainty, prefer the installed docs in `node_modules/next/dist/docs/`.
 
